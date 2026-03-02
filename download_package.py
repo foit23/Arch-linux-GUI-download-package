@@ -1,23 +1,27 @@
 import subprocess
 import sys
 from getpass import getpass
-import shlex
+
 
 def download_arch(package):
     
-    password = getpass("Пароль sudo: ")
-    
     try:
-        process = subprocess.run(
-            ["echo", password, "|", "sudo", "pacman", "-S", package],
-            input = "y",
+        subprocess.run(
+            ["pacman", "-S", package],
+            capture_output = True,
             text = True,
-            capture_output=True,                        
+            input = "y"
         )
-        print(process.stdout)
-        print("запуск установки...")
-        return True
-    except subprocess.CalledProcessError as e:
+        
+        
+        check_package = subprocess.run(["pacman", "-Qe", package])        
+        if check_package.returncode == 0:
+            return True
+        else:
+            return False
+
+    except subprocess.SubprocessError as e:
         print(f"ошибка: {e}")
         return False
 
+    
