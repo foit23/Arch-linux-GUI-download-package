@@ -12,8 +12,7 @@ def download_arch(package):
             text = True,
             input = "y"
         )
-        
-        
+                
         check_package = subprocess.run(["pacman", "-Qe", package])        
         if check_package.returncode == 0:
             return True
